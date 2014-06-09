@@ -2,26 +2,40 @@
 
 <meta charset="utf-8" />
 
-<title>WebSocket Test</title>
+<title>Web Socket Sample - Time Service</title>
 
 <script language="javascript" type="text/javascript">
 
-    var wsUri = "ws://localhost:8888/websocket/";
+    var wsUri = "ws://localhost:8888/web-socket-sample/time-service/";
+    var websocket;
     var output;
 
-    function init()
+    function initSocket()
     {
         output = document.getElementById("output");
-        testWebSocket();
+        openSocket();
     }
 
-    function testWebSocket()
+    function openSocket()
     {
+        if(websocket) websocket.close();
         websocket = new WebSocket(wsUri);
         websocket.onopen = function(evt) { onOpen(evt) };
         websocket.onclose = function(evt) { onClose(evt) };
         websocket.onmessage = function(evt) { onMessage(evt) };
         websocket.onerror = function(evt) { onError(evt) };
+    }
+
+    function closeSocket()
+    {
+        websocket.close()
+    }
+
+    function clearOutput()
+    {
+        while (output.hasChildNodes()) {
+            output.removeChild(output.lastChild);
+        }
     }
 
     function onOpen(evt)
@@ -36,7 +50,7 @@
 
     function onMessage(evt)
     {
-        writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
+        writeToScreen('<span style="color: blue;">TIME IN MILLIS: ' + evt.data+'</span>');
     }
 
     function onError(evt) {
@@ -46,14 +60,21 @@
     function writeToScreen(message) {
         var pre = document.createElement("p");
         pre.style.wordWrap = "break-word";
+        pre.style.height = "0px";
         pre.innerHTML = message;
         output.appendChild(pre);
     }
 
-    window.addEventListener("load", init, false);
+    window.addEventListener("load", initSocket, false);
 
 </script>
 
-<h2>WebSocket Test</h2>
+<h2>Web Socket Sample - Time Service</h2>
+
+<div>
+    <button onclick="openSocket()">Open</button>
+    <button onclick="closeSocket()">Close</button>
+    <button onclick="clearOutput()">Clear</button>
+</div>
 
 <div id="output"></div>
